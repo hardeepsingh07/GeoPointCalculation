@@ -58,17 +58,34 @@ fun main(args: Array<String>) {
         geoPointInfo.add(GeoPointInfo(shortDistancePoint!!, location, "%.5f".format(shortestDistance).toDouble(), null))
     })
 
-    //Get only Distinct
-    val distinctGeoPointInfo = geoPointInfo.distinctBy { it.pathGeoPoint }
-    println("GeoPointInfo Size: ${distinctGeoPointInfo.size}")
-
-    //Calculate Residual
-    distinctGeoPointInfo.forEach({
-        it.residual = GeoPoint(it.pathGeoPoint.latitude - it.locationGeoPoint.latitude,
-                    it.pathGeoPoint.longitude - it.locationGeoPoint.longitude)
-        println(it)
+    //Get average of Location points with respect to Path points and calculate residual
+    println("GeoPointInfo Before Distinct Size: ${geoPointInfo.size}")
+    var distinctGeoPointInfo = mutableListOf<GeoPointInfo>()
+    pathList.forEach({
+        val pathPoint = it
+        var averageLat = 0.0
+        var averageLng = 0.0
+        var dataPoint: GeoPointInfo? = null
+        var counter = 0
+        geoPointInfo.forEach({
+            dataPoint = it
+            if(pathPoint == it.pathGeoPoint) {
+                averageLat += it.locationGeoPoint.latitude
+                averageLng += it.locationGeoPoint.longitude
+                counter++
+            }
+        })
+        if(averageLat != 0.0 && averageLng != 0.0) {
+            val averageLocationGeoPoint = GeoPoint(averageLat / counter, averageLng / counter)
+            val newGeoInfoPointInfo = GeoPointInfo(pathPoint, averageLocationGeoPoint, dataPoint!!.distance,
+                    GeoPoint(it.latitude - averageLocationGeoPoint.latitude, it.longitude - averageLocationGeoPoint.longitude))
+            distinctGeoPointInfo.add(newGeoInfoPointInfo)
+        }
     })
+    println("GeoPointInfo After Distinct Size: ${distinctGeoPointInfo.size}")
 
+
+//
     val (rmseLat, rmseLng, rmseDist) = rootMeanSquareError(distinctGeoPointInfo)
     println("Root Mean Square Error Latitude: $rmseLat")
     println("Root Mean Square Error Longitude: $rmseLng")
