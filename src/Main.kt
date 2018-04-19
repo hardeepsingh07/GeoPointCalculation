@@ -17,8 +17,7 @@ data class GeoPointInfo(var pathGeoPoint: GeoPoint, var locationGeoPoint: GeoPoi
 }
 
 data class GeoCalculationResults(var geoPointInfoList: List<GeoPointInfo>, var rmseLat: Double,
-                                 var rmseLng: Double, var rmseDist: Double) {
-}
+                                 var rmseLng: Double, var rmseDist: Double)
 
 fun main(args: Array<String>) {
     val pathList = mutableListOf<GeoPoint>()
