@@ -20,11 +20,12 @@ data class GeoCalculationResults(var geoPointInfoList: List<GeoPointInfo>, var r
                                  var rmseLng: Double, var rmseDist: Double)
 
 fun main(args: Array<String>) {
+    var fileNumber = "17"
     val pathList = mutableListOf<GeoPoint>()
     val locationList = mutableListOf<GeoPoint>()
 
     //Read path way-points file
-    File("path_gm_17_false.txt").useLines { lines ->
+    File("path_gm_${fileNumber}_false.txt").useLines { lines ->
         lines.forEach {
             val result = it.split(",")
             pathList.add(GeoPoint(result[0].toDouble(), result[1].toDouble()))
@@ -32,7 +33,7 @@ fun main(args: Array<String>) {
     }
 
     //Read user movement file
-    File("user_location_17_false.txt").useLines { lines ->
+    File("user_location_${fileNumber}_false.txt").useLines { lines ->
         lines.forEach {
             val result = it.split(",")
             locationList.add(GeoPoint(result[0].toDouble(), result[1].toDouble()))
@@ -75,7 +76,7 @@ fun main(args: Array<String>) {
 
     //Create Result Object and Write to Result File
     var geoCalculationResults = GeoCalculationResults(distinctGeoPointInfo, rmseLat, rmseLng, rmseDist)
-    File("result_calculation_17_false.txt").printWriter().use { out ->
+    File("result_calculation_${fileNumber}_false.txt").printWriter().use { out ->
         geoCalculationResults.geoPointInfoList.forEach({
             out.write(it.toString() + "\n")
         })
